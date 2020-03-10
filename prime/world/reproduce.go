@@ -1,0 +1,64 @@
+package world
+
+import (
+	"math/rand"
+)
+
+// MutateValue change a given value string randomly
+func MutateValue(value Expression) Expression {
+	lastTokenIndex := len(value.Tokens) - 1
+	if lastTokenIndex >= 0 {
+		value = addScalarOrVariable(value)
+		lastTokenIndex++
+	}
+
+	// TODO: check index
+	lastTokenType := value.Tokens[lastTokenIndex].Type
+	if lastTokenType < 2 {
+		value = addOperation(value)
+	} else {
+		value = addScalarOrVariable(value)
+	}
+
+	return value
+}
+
+func randomNum(min, max int) int {
+	return rand.Intn(max-min+1) + min
+}
+
+func randomAddVariable(variableCount int) bool {
+	// make variable count rare
+	return randomNum(0, (variableCount+1)^2) == 1
+}
+
+func randomOperation() int {
+	return randomNum(2, operationsCount+1)
+}
+
+func addScalarOrVariable(value Expression) Expression {
+	var newToken token
+	if randomAddVariable(value.VariablesCount) {
+		// add variable
+		newToken = token{
+			Type:          variable,
+			VariableValue: value.VariablesCount,
+		}
+		value.VariablesCount++
+	} else {
+		// add scalar
+		newToken = token{
+			Type:        scalar,
+			ScalarValue: float32(randomNum(0, 10)),
+		}
+	}
+	value.Tokens = append(value.Tokens, newToken)
+	return value
+}
+
+func addOperation(value Expression) Expression {
+	operation := tokenType(randomOperation())
+	value.Tokens = append(value.Tokens, token{Type: operation})
+
+	return value
+}
