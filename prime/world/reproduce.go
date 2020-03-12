@@ -7,12 +7,11 @@ import (
 // MutateValue change a given value string randomly
 func MutateValue(value Expression) Expression {
 	lastTokenIndex := len(value.Tokens) - 1
-	if lastTokenIndex >= 0 {
+	if lastTokenIndex <= 0 {
 		value = addScalarOrVariable(value)
 		lastTokenIndex++
 	}
 
-	// TODO: check index
 	lastTokenType := value.Tokens[lastTokenIndex].Type
 	if lastTokenType < 2 {
 		value = addOperation(value)
@@ -21,6 +20,7 @@ func MutateValue(value Expression) Expression {
 	}
 
 	return value
+
 }
 
 func randomNum(min, max int) int {
@@ -37,17 +37,17 @@ func randomOperation() int {
 }
 
 func addScalarOrVariable(value Expression) Expression {
-	var newToken token
+	var newToken Token
 	if randomAddVariable(value.VariablesCount) {
 		// add variable
-		newToken = token{
+		newToken = Token{
 			Type:          variable,
-			VariableValue: value.VariablesCount,
+			VariableValue: value.VariablesCount + 1,
 		}
 		value.VariablesCount++
 	} else {
 		// add scalar
-		newToken = token{
+		newToken = Token{
 			Type:        scalar,
 			ScalarValue: float32(randomNum(0, 10)),
 		}
@@ -57,8 +57,8 @@ func addScalarOrVariable(value Expression) Expression {
 }
 
 func addOperation(value Expression) Expression {
-	operation := tokenType(randomOperation())
-	value.Tokens = append(value.Tokens, token{Type: operation})
+	operation := TokenType(randomOperation())
+	value.Tokens = append(value.Tokens, Token{Type: operation})
 
 	return value
 }

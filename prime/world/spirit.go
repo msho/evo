@@ -2,37 +2,40 @@ package world
 
 import "fmt"
 
-type tokenType int
+type TokenType int
 
 const (
-	scalar   tokenType = 0
-	variable tokenType = 1
+	scalar   TokenType = 0
+	variable TokenType = 1
 
-	plus   tokenType = 2
-	minus  tokenType = 3
-	times  tokenType = 4
-	divide tokenType = 5
-	power  tokenType = 6
-	root   tokenType = 7
+	plus       TokenType = 2
+	minus      TokenType = 3
+	times      TokenType = 4
+	divide     TokenType = 5
+	power      TokenType = 6
+	squareRoot TokenType = 7
+	cubeRoot   TokenType = 8
 
-	operationsCount = 6
+	operationsCount = 7
 )
 
-type token struct {
-	Type tokenType
+// Token is nice
+type Token struct {
+	Type TokenType
 
 	ScalarValue   float32
 	VariableValue int
 }
 
-func (t *token) ToString() string {
+// ToString of a token. Yeah!
+func (t *Token) ToString() string {
 	var strVal string
 
 	switch t.Type {
 	case scalar:
 		strVal = fmt.Sprint(t.ScalarValue)
 	case variable:
-		strVal = fmt.Sprintf("x%f", t.VariableValue)
+		strVal = fmt.Sprintf("x%d", t.VariableValue)
 	case plus:
 		strVal = "+"
 	case minus:
@@ -43,8 +46,10 @@ func (t *token) ToString() string {
 		strVal = "/"
 	case power:
 		strVal = "^"
-	case root:
-		strVal = "root"
+	case squareRoot:
+		strVal = "square-root"
+	case cubeRoot:
+		strVal = "cube-root"
 	}
 	return strVal
 }
@@ -52,8 +57,17 @@ func (t *token) ToString() string {
 // Expression symbol a mathematic expression with variable and scalars
 // Example (2^x1)-1
 type Expression struct {
-	Tokens         []token
+	Tokens         []Token
 	VariablesCount int
+}
+
+// ToString write expression in human thing
+func (e *Expression) ToString() string {
+	strVal := ""
+	for _, token := range e.Tokens {
+		strVal += " " + token.ToString()
+	}
+	return strVal
 }
 
 // Spirit is a living thinking thing

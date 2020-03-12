@@ -33,7 +33,7 @@ func (c *Container) Reproduce() bool {
 	populationSize := len(c.Population)
 	for i := 0; i < populationSize; i++ {
 		newSpirit := c.Population[i].Split()
-		if newSpirit.Value.Tokens[0].ScalarValue == 0 { // TODO
+		if expressionPrimesFound(newSpirit.Value, true) == len(config.WantedResult2)-1 {
 			return true
 		}
 		c.Population = append(c.Population, newSpirit)
@@ -43,11 +43,11 @@ func (c *Container) Reproduce() bool {
 
 // GetBestFitValue get the best spirit yet
 func (c *Container) GetBestFitValue() Expression {
-	spiritScores := calculateScore(c.Population)
-	maxScore := float32(0)
+	spiritScores := CalculateScore(c.Population)
+	maxScore := 0
 	chosenSpirit := c.Population[0]
 	for pos, score := range spiritScores {
-		if maxScore > score {
+		if maxScore < score {
 			maxScore = score
 			chosenSpirit = c.Population[pos]
 		}

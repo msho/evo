@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"prime/config"
 	"prime/world"
 )
 
@@ -11,12 +10,13 @@ func main() {
 	container.InitLife()
 
 	// loop lifeCycle (reprduce*X, armagedon)
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 9000000; i++ {
 		if container.LifeCycle() {
-			fmt.Println(config.WantedResult, "at", i)
-			return
+			fmt.Println("!! Fount at", i)
+
+			break
 		}
 	}
-	fmt.Println("not found :(")
-	fmt.Println("Best fit", container.GetBestFitValue())
+	bestFit := container.GetBestFitValue()
+	fmt.Println("Best fit", bestFit.ToString())
 }
